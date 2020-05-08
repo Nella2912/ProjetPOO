@@ -7,11 +7,12 @@ public class Alignement2seq implements Aligneur {
 	/**
 	 * première Sequence qui doit être alignée
 	 */
-	Sequence s1;
+	private Sequence s1;
+	
 	/**
 	 * deuxième Sequence qui doit être alignée
 	 */
-	Sequence s2;
+	private Sequence s2;
 	
 	/**
 	 * score pour un match extrait de la matrice de substitution NUC4.4
@@ -70,17 +71,16 @@ public class Alignement2seq implements Aligneur {
 		
 		
 		for (lig=1; lig <= xlen; lig++) { 
-			//char tmp = s1.character(lig);	
 			for (col=1; col <= ylen; col++) {
 					if (s1.character(lig-1) == s2.character(col-1)) {
-						if(s1.character(lig-1) == 'N') { // on a N en face de N
+						if(s1.character(lig-1) == 'N') { // on a N en face de N et donc le score d'alignement est -1
 							NO = mat[lig-1][col-1] - 1;
 						}else { // y'a pas de N
 							NO = mat[lig-1][col-1] + match;
 						}
 			        }else {
-			        	if(s1.character(lig-1) == 'N' || s2.character(col-1) == 'N') {
-			        		NO = mat[lig-1][col-1] - 2;
+			        	if(s1.character(lig-1) == 'N' || s2.character(col-1) == 'N') { // on a N en face d'un aa quelconque et donc le score d'alignement est -2
+			        		NO = mat[lig-1][col-1] - 2;           
 			        	}
 			        	NO = mat[lig-1][col-1] + mismatch;
 			        }
@@ -183,6 +183,12 @@ public class Alignement2seq implements Aligneur {
 	public void Afficher() {
 		System.out.println(s1.getID()+" "+AlignmentSeq1+ " "+s1.Longueur());
 		System.out.println(s2.getID()+" "+AlignmentSeq2+ " "+s2.Longueur());
+	}
+	public Sequence getS1() {
+		return s1;
+	}
+	public Sequence getS2() {
+		return s2;
 	}
 	public int getMatch() {
 		return match;
