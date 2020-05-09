@@ -37,8 +37,9 @@ public class Alignement2seq implements Aligneur {
 	/**
 	 * Alignement des deux sequences 
 	 */
-	String AlignmentSeq1 = "";
-	String AlignmentSeq2 = "";
+	private String alignementSeq1 = "";
+	
+	private String alignementSeq2 = "";
 	
 	
 	/**
@@ -49,23 +50,23 @@ public class Alignement2seq implements Aligneur {
 	public Alignement2seq(Sequence seq1, Sequence seq2) {
 		this.s1 = seq1;
 		this.s2 = seq2;
-		this.mat=new int [seq1.Longueur()+1][seq2.Longueur()+1];
+		this.mat=new int [seq1.longueur()+1][seq2.longueur()+1];
 	}
 	
 	/**
 	 * remplit la matrice de scores
 	 */
-	public void MatriceDeScore() {
+	public void matriceDeScore() {
 		int lig, col;                                                                    // index de la matrice
 		int NO, h, g;                                                                    // éléments parmis lesquels on cherche le max
 		int max;
-		int xlen = s1.Longueur();
-		int ylen = s2.Longueur();
+		int xlen = s1.longueur();
+		int ylen = s2.longueur();
 		
-		for(col=0; col<= s2.Longueur(); col++) {                                          // on remplit la première ligne
+		for(col=0; col<= s2.longueur(); col++) {                                          // on remplit la première ligne
 			mat[0][col] = gap*col;
 		}
-		for(lig = 0; lig <= s1.Longueur(); lig++) { 										 // on remplit la première colonne
+		for(lig = 0; lig <= s1.longueur(); lig++) { 										 // on remplit la première colonne
 			mat[lig][0] = gap*lig;
 		}
 		
@@ -73,15 +74,15 @@ public class Alignement2seq implements Aligneur {
 		for (lig=1; lig <= xlen; lig++) { 
 			for (col=1; col <= ylen; col++) {
 					if (s1.character(lig-1) == s2.character(col-1)) {
-						if(s1.character(lig-1) == 'N') { // on a N en face de N et donc le score d'alignement est -1
+						/*if(s1.character(lig-1) == 'N') { // on a N en face de N et donc le score d'alignement est -1
 							NO = mat[lig-1][col-1] - 1;
-						}else { // y'a pas de N
+						}else { // y'a pas de N*/
 							NO = mat[lig-1][col-1] + match;
-						}
+						//}
 			        }else {
-			        	if(s1.character(lig-1) == 'N' || s2.character(col-1) == 'N') { // on a N en face d'un aa quelconque et donc le score d'alignement est -2
+			        	/*if(s1.character(lig-1) == 'N' || s2.character(col-1) == 'N') { // on a N en face d'un aa quelconque et donc le score d'alignement est -2
 			        		NO = mat[lig-1][col-1] - 2;           
-			        	}
+			        	}*/
 			        	NO = mat[lig-1][col-1] + mismatch;
 			        }
 			        g = mat[lig][col-1] + gap;
@@ -99,53 +100,59 @@ public class Alignement2seq implements Aligneur {
 	 * effectue l'alignement de deux séquences à partir de la matrice des scores
 	 */
 	public void aligner() {
-		int i = s1.Longueur();
-		int j = s2.Longueur();
-		while(i > 0 && j>0) {
+		int i = s1.longueur();
+		int j = s2.longueur();
+		while(i > 0 && j > 0) {
+			System.out.println(i + "et" +j);
 			int score = mat[i][j];
 			int scoreH = mat[i][j-1];
 			int scoreG = mat[i-1][j];
 			int scoreNO;
 			if (s1.character(i-1) == s2.character(j-1)) {
-				if(s1.character(i-1) == 'N') {
+				/*if(s1.character(i-1) == 'N') {
+					System.out.println("je rencontre N 2 fois");
 					scoreNO = mat[i-1][j-1] - 1;
-				}else {
+				}else {*/
 					scoreNO = mat[i-1][j-1] + match;
-				}
+				//}
 			}else {
-	        	if(s1.character(i-1) == 'N' || s2.character(j-1) == 'N') {
+	        	/*if(s1.character(i-1) == 'N' || s2.character(j-1) == 'N') {
+	        		System.out.println("je rencontre N 1 fois");
 	        		scoreNO = mat[i-1][j-1] - 2;
-	        	}else {
+	        	}else {*/
 	        		scoreNO = mat[i-1][j-1] + mismatch;
-	        	}
+	        	//}
 			}
 			if(score == scoreNO) {
-				AlignmentSeq1 = s1.character(i-1)+AlignmentSeq1;
-				AlignmentSeq2 = s2.character(j-1)+AlignmentSeq2;
+				alignementSeq1 = s1.character(i-1)+alignementSeq1;
+				alignementSeq2 = s2.character(j-1)+alignementSeq2;
 				i--;
 				j--;
+				System.out.println("je decremente i et j");
 			}else {
 				if(score == scoreG + gap) {
-					AlignmentSeq1 = s1.character(i-1)+AlignmentSeq1;
-					AlignmentSeq2 = '-'+AlignmentSeq2;
+					alignementSeq1 = s1.character(i-1)+alignementSeq1;
+					alignementSeq2 = '-'+alignementSeq2;
+					System.out.println("je decremente i");
 					i--;
 				}
 				if(score == scoreH + gap){
-					AlignmentSeq1 = '-'+AlignmentSeq1;
-					AlignmentSeq2 = s2.character(j-1)+AlignmentSeq2;
+					alignementSeq1 = '-'+alignementSeq1;
+					alignementSeq2 = s2.character(j-1)+alignementSeq2;
 					j--;
+					System.out.println("je decremente j");
 				}
 			}
 		}
 		while(i>0) {
-			AlignmentSeq1 = s1.character(i-1)+AlignmentSeq1;
-			AlignmentSeq2 = '-'+AlignmentSeq2;
+			alignementSeq1 = s1.character(i-1)+alignementSeq1;
+			alignementSeq2 = '-'+alignementSeq2;
 			i--;
 		}
 		
 		while(j>0) {
-			AlignmentSeq1 = '-'+AlignmentSeq1;
-			AlignmentSeq2 = s2.character(j-1)+AlignmentSeq2;
+			alignementSeq1 = '-'+alignementSeq1;
+			alignementSeq2 = s2.character(j-1)+alignementSeq2;
 			j--;
 		}
 	}
@@ -155,21 +162,25 @@ public class Alignement2seq implements Aligneur {
 	 * calcule le score de l'alignement
 	 * @return score de l'alignement
 	 */
-	public int ScoreAlignement() {
+	public int scoreAlignement() {
 		int score = 0;
 		int i;
-		for (i = 0; i<AlignmentSeq1.length(); i++) {
-			if(AlignmentSeq1.charAt(i) == AlignmentSeq2.charAt(i)) {
-				if(AlignmentSeq1.charAt(i) == 'N') {
+		for (i = 0; i<alignementSeq1.length(); i++) {
+			if(alignementSeq1.charAt(i) == alignementSeq2.charAt(i)) {
+				/*if(alignementSeq1.charAt(i) == 'N') {
 					score = score - 1;
-				}else {
+				}else {*/
 					score = score + match;
-				}
+				//}
 			}else {
-				if(AlignmentSeq1.charAt(i) == 'N' || AlignmentSeq2.charAt(i) == 'N') {
-					score = score - 2;
+				if(alignementSeq1.charAt(i) == '-' || alignementSeq2.charAt(i) == '-') {
+					score = score + gap;
 				}else {
-					score = score + mismatch;
+					/*if(alignementSeq1.charAt(i) == 'N' || alignementSeq2.charAt(i) == 'N') {
+						score = score - 2;
+					}else {*/
+						score = score + mismatch;
+					//}
 				}
 			}
 		}
@@ -180,9 +191,9 @@ public class Alignement2seq implements Aligneur {
 	/**
 	 * affiche le résultat de l'alignement
 	 */
-	public void Afficher() {
-		System.out.println(s1.getID()+" "+AlignmentSeq1+ " "+s1.Longueur());
-		System.out.println(s2.getID()+" "+AlignmentSeq2+ " "+s2.Longueur());
+	public void afficher() {
+		System.out.println(s1.getID()+" "+alignementSeq1+ " "+s1.longueur());
+		System.out.println(s2.getID()+" "+alignementSeq2+ " "+s2.longueur());
 	}
 	public Sequence getS1() {
 		return s1;
@@ -198,5 +209,11 @@ public class Alignement2seq implements Aligneur {
 	}
 	public int getGap() {
 		return gap;
+	}
+	public String getAlignementSeq1() {
+		return alignementSeq1;
+	}
+	public String getAlignementSeq2() {
+		return alignementSeq2;
 	}
 }
