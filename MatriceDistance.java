@@ -18,6 +18,7 @@ public class MatriceDistance {
 	
 	private int [][] distMat;
 	
+	
 	/**
 	 * 
 	 * @param filename
@@ -33,7 +34,7 @@ public class MatriceDistance {
 	 * remplie la liste des sequences à partir des éléments lus dans le fichier entré
 	 * @throws Exception
 	 */
-	public void listeSequence() throws Exception {
+	public void construireListeSeq() throws Exception {
 	    BufferedReader lecteurAvecBuffer=null;
 	    String ligne;
 	    String idTmp = "";
@@ -67,7 +68,7 @@ public class MatriceDistance {
 	}
 	
 	
-	public void disctance() {
+	public void distance() {
 		int dim = ListeDesSequences.size();
 		distMat = new int [dim][dim];
 		int i;                                   //indice de ligne
@@ -76,16 +77,39 @@ public class MatriceDistance {
 		for(i=0; i<dim; i++) {
 			Sequence seq1 = ListeDesSequences.get(i);          
 			for(j=i; j<dim; j++) {
+				//System.out.println(i + "et" + j);
 				Sequence seq2 = ListeDesSequences.get(j);
 				Alignement2seq alignement = new Alignement2seq(seq1, seq2);
 				alignement.matriceDeScore();
+				//System.out.println("mat de score calculée");
 				alignement.aligner();
+				//System.out.println("alignement fait");
 				score = alignement.scoreAlignement();
-				
 				// on attribue à la ligne i et à la colone j le score. Et on attribut le même score à la ligne j et la colonne i
-				distMat[i][j] = score;              
+				distMat[i][j] = score; 
 				distMat[j][i] = score;
 			}
+		}
+	}
+	
+	/**
+	 * restitue la matrice de distances
+	 * @return matrice de distances
+	 */
+	public int[][] getDistMat() {
+		return distMat;
+	}
+	
+	public void afficheMat() {
+		int dim = ListeDesSequences.size();
+		//System.out.println(dim);
+		int i;
+		int j;
+		for (i= 0; i<dim; i++) {
+			for(j = 0; j<dim; j++) {
+				System.out.print(distMat[i][j]);
+			}
+			System.out.println("");
 		}
 	}
 	
