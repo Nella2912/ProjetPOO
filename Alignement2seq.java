@@ -103,7 +103,7 @@ public class Alignement2seq implements Aligneur {
 		int i = s1.longueur();
 		int j = s2.longueur();
 		while(i > 0 && j > 0) {
-			System.out.println(i + "et" +j);
+			//System.out.println(i + "et" +j);
 			int score = mat[i][j];
 			int scoreH = mat[i][j-1];
 			int scoreG = mat[i-1][j];
@@ -128,19 +128,19 @@ public class Alignement2seq implements Aligneur {
 				alignementSeq2 = s2.character(j-1)+alignementSeq2;
 				i--;
 				j--;
-				System.out.println("je decremente i et j");
+				//System.out.println("je decremente i et j");
 			}else {
 				if(score == scoreG + gap) {
 					alignementSeq1 = s1.character(i-1)+alignementSeq1;
 					alignementSeq2 = '-'+alignementSeq2;
-					System.out.println("je decremente i");
+					//System.out.println("je decremente i");
 					i--;
 				}
 				if(score == scoreH + gap){
 					alignementSeq1 = '-'+alignementSeq1;
 					alignementSeq2 = s2.character(j-1)+alignementSeq2;
 					j--;
-					System.out.println("je decremente j");
+					//System.out.println("je decremente j");
 				}
 			}
 		}
