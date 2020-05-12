@@ -8,7 +8,7 @@ public class Sequence {
 	/**
 	 * Identifiant de la sequence
 	 */
-	private int ID;
+	private String ID;
 	
 	/**
 	 * Sequence
@@ -20,7 +20,7 @@ public class Sequence {
 	 * @param identifiant : l'identifiant de la sequence
 	 * @param chaine : la sequence
 	 */
-	public Sequence(int identifiant, String chaine) {
+	public Sequence(String identifiant, String chaine) {
 		this.ID = identifiant;
 		this.seq = chaine;
 	}
@@ -29,7 +29,7 @@ public class Sequence {
 	 * fixe l'identifiant de la sequence
 	 * @param identifiant: ID de la sequence
 	 */
-	public void setID(int identifiant) {
+	public void setID(String identifiant) {
 		this.ID = identifiant;
 	}
 	
@@ -45,7 +45,7 @@ public class Sequence {
 	 * restitue l'identifiant de la sequence
 	 * @return identifiant de la sequence
 	 */
-	public int getID() {
+	public String getID() {
 		return ID;
 	}
 	
@@ -55,5 +55,26 @@ public class Sequence {
 	 */
 	public String getSEQ() {
 		return seq;
+	}
+	
+	/**
+	 * restitue la longueur d'une sequence
+	 * @return longueur
+	 */
+	public int longueur() {
+		return seq.length();
+	}
+	
+	/**
+	 * retourne un caractere de la sequence
+	 * @param index position du caractere
+	 * @return caractere à la position entrée en paramètre
+	 */
+	public char character(int index) {
+		return seq.charAt(index);
+	}
+	
+	public void affiche() {
+		System.out.println(ID + " " + seq);
 	}
 }
