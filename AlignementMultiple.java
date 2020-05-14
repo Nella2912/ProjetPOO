@@ -25,15 +25,16 @@ public class AlignementMultiple {
 		*/
 		MatriceDistance exple = new MatriceDistance("ADN16S.fasta");
 		exple.construireListeSeq();
-		/*Sequence seqt1 = exple.ListeDesSequences.get(0);
+		Sequence seqt1 = exple.ListeDesSequences.get(0);
 		Sequence seqt2 = exple.ListeDesSequences.get(10);
-		seqt1.affiche();
+		/*seqt1.affiche();
 		seqt2.affiche();*/
-		//Alignement2seq AS = new Alignement2seq(seqt1, seqt2);
-		//AS.matriceDeScore();
-		//AS.aligner();
+		Alignement2seq AS = new Alignement2seq(seqt1, seqt2);
+		AS.matriceDeScore();
+		AS.aligner();
 		//System.out.println(AS.scoreAlignement());
-		//AS.afficher();
+		//System.out.println(AS.getAlignementSeq1().length());
+		AS.afficher();
 		exple.distance();
 		exple.afficheMat();
 	}
