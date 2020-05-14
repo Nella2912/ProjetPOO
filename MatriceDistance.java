@@ -16,7 +16,7 @@ public class MatriceDistance {
 	
 	List<Sequence> ListeDesSequences;
 	
-	private int [][] distMat;
+	private double [][] distMat;
 	
 	
 	/**
@@ -70,10 +70,10 @@ public class MatriceDistance {
 	
 	public void distance() {
 		int dim = ListeDesSequences.size();
-		distMat = new int [dim][dim];
+		distMat = new double [dim][dim];
 		int i;                                   //indice de ligne
 		int j;                                   // indice de colonne
-		int score;
+		double dis;
 		for(i=0; i<dim; i++) {
 			Sequence seq1 = ListeDesSequences.get(i);          
 			for(j=i; j<dim; j++) {
@@ -84,10 +84,10 @@ public class MatriceDistance {
 				//System.out.println("mat de score calculée");
 				alignement.aligner();
 				//System.out.println("alignement fait");
-				score = alignement.scoreAlignement();
+				dis = 1 - alignement.scoreAlignement();
 				// on attribue à la ligne i et à la colone j le score. Et on attribut le même score à la ligne j et la colonne i
-				distMat[i][j] = score; 
-				distMat[j][i] = score;
+				distMat[i][j] = dis; 
+				distMat[j][i] = dis;
 			}
 		}
 	}
@@ -96,7 +96,7 @@ public class MatriceDistance {
 	 * restitue la matrice de distances
 	 * @return matrice de distances
 	 */
-	public int[][] getDistMat() {
+	public double[][] getDistMat() {
 		return distMat;
 	}
 	

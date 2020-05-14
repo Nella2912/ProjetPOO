@@ -162,30 +162,33 @@ public class Alignement2seq implements Aligneur {
 	 * calcule le score de l'alignement
 	 * @return score de l'alignement
 	 */
-	public int scoreAlignement() {
-		int score = 0;
+	public double scoreAlignement() {
+		double score = 0.0;
 		int i;
-		for (i = 0; i<alignementSeq1.length(); i++) {
+		int lon = alignementSeq1.length();
+		for (i = 0; i<lon; i++) {
 			if(alignementSeq1.charAt(i) == alignementSeq2.charAt(i)) {
 				/*if(alignementSeq1.charAt(i) == 'N') {
 					score = score - 1;
 				}else {*/
-					score = score + match;
+					score = score + 1; //match;
 				//}
-			}else {
+			}/*else {
 				if(alignementSeq1.charAt(i) == '-' || alignementSeq2.charAt(i) == '-') {
 					score = score + gap;
 				}else {
-					/*if(alignementSeq1.charAt(i) == 'N' || alignementSeq2.charAt(i) == 'N') {
+					if(alignementSeq1.charAt(i) == 'N' || alignementSeq2.charAt(i) == 'N') {
 						score = score - 2;
-					}else {*/
+					}else {
 						score = score + mismatch;
-					//}
+					}
 				}
-			}
+			}*/
 		}
-		return score;
+		score = ((score/lon) * 10000)/10000;
+		return score;///alignementSeq1.length();
 	}
+	
 	
 	
 	/**
