@@ -5,47 +5,134 @@
  */
 
 public class Arbre {
-	private String idsequence;
-	private Arbre Droite;
-	private Arbre Gauche;
-	//double distanceG;
-	//double distanceD;
+	private String cle;
+	Sequence seqCle;
+	Alignement alignCle;
+	private Arbre droite;
+	private Arbre gauche;
+	private double hautG;
+	private double hautD;
+	private int nbreFeuilles;
+	private Arbre pere;
 	
-	public Arbre(String id,Arbre g,Arbre d){
-		this.idsequence=id;
-		this.Droite=d;
-		this.Gauche=g;
-		
+	/**
+	 * constructeur Arbre vide
+	 */
+	public Arbre(){
+		this.cle = "";
+		this.seqCle = null;
+		this.alignCle = null;
+		this.droite = null;
+		this.gauche = null;
+		this.hautD = 0;
+		this.hautG = 0;
+		this.nbreFeuilles = 1;
+		this.pere = null;
 	}
 	
-	public String  getid(){
-		return(idsequence);
-
+	/**
+	 * constructeur arbre avec deux arbres en paramètres
+	 * @param id
+	 * @param g
+	 * @param d
+	 */
+	public Arbre(String id, Sequence seq, Alignement al, Arbre g, Arbre d){
+		this.cle = id;
+		this.seqCle = seq;
+		this.alignCle = al;
+		this.droite = d;
+		this.gauche = g;
+		this.hautD = 0;
+		this.hautG = 0;
+		this.nbreFeuilles = 1;
+		this.pere = null;
 	}
 	
-	public Arbre getArbreG(){
-		return(Gauche);
-		
-	}
-	public Arbre getArbreD(){
-		return(Droite);
-		
-	}
-	
-	
-	
-	public Arbre fusion(Arbre a, Arbre b){
-		Arbre g = null;
-		Arbre d = null;
-		String id= null;
-		Arbre c = new Arbre(id,g,d);
-		c.Gauche=a;
-		c.Droite=b;
-		
-		return c;
+	/**
+	 * restitue la clé de l'arbre
+	 * @return
+	 */
+	public String getCle(){
+		return(cle);
 	}
 	
-	public double (Arbre A){ // calcul la distance  d'un noeud a ces feuilles
-		
+	/**
+	 * restitue l'arbre droit
+	 * @return
+	 */
+	Arbre getDroite() {
+		return droite;
+	}
+	
+	/**
+	 * restitue l'arbre gauche
+	 * @return
+	 */
+	Arbre getGauche() {
+		return gauche;
+	}
+	
+	/**
+	 * restitue la hauteur de l'arbre droit
+	 * @return
+	 */
+	public double getHautD() {
+		return hautD;
+	}
+	
+	/**
+	 * assigne la hauteur de l'arbre droit
+	 * @return
+	 */
+	public void setHautD(double hd) {
+		this.hautD = hd;
+	}
+	
+	/**
+	 * restitue la hauteur de l'arbre gauche
+	 * @return
+	 */
+	public double getHautG() {
+		return hautG;
+	}
+	
+	/**
+	 * assigne la hauteur de l'arbre gauche
+	 * @return
+	 */
+	public void setHautG(double hg) {
+		this.hautG = hg;
+	}
+	
+	/**
+	 * restitue le nombre de feuilles de l'arbre
+	 * @return
+	 */
+	public int getNbreFeuilles() {
+		return nbreFeuilles;
+	}
+	
+	/**
+	 * assigne le nbre de feuilles
+	 * @param nbreFeuilles
+	 */
+	public void setNbreFeuilles(int nbreFeuilles) {
+		this.nbreFeuilles = nbreFeuilles;
+	}
+	
+	/**
+	 * assigne le pere du noeud courant
+	 * @param pere
+	 */
+	public void setPere(Arbre pere) {
+		this.pere = pere;
+	}
+	
+	/**
+	 * retourne le pere courant
+	 * @return
+	 */
+	public Arbre getPere() {
+		return pere;
 	}
 }
