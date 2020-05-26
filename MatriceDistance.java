@@ -12,41 +12,55 @@ import java.util.List;
  */
 public class MatriceDistance {
 	
-	String N0mfichier;
-	
-	List<Sequence> ListeDesSequences;
-	
+	private String nomfichier;
+	private List<Sequence> listeDesSequences;
 	private double [][] distMat;
-	
+	private List<Integer> listAncienIndexMatDist;
 	
 	/**
-	 * 
+	 * instancie un objet Matrice Distance et initialise les attrinuts
 	 * @param filename
 	 */
 	public MatriceDistance(String filename) {
-		this.N0mfichier = filename;
-		this.ListeDesSequences = new ArrayList<Sequence>();
+		this.nomfichier = filename;
+		this.listeDesSequences = new ArrayList<Sequence>();
+		this.listAncienIndexMatDist = new ArrayList<Integer>();
 	}
 	
-	
+	/**
+	 * fonction pour l'initialisation de la matrice des distances
+	 * @throws Exception
+	 */
+	public void initMatriceDistance() throws Exception{
+		try {
+			this.construireListeSeq();
+			this.distance();
+		}
+		catch(Exception e) {
+			throw e;
+		}
+	}
 	
 	/**
 	 * remplie la liste des sequences à partir des éléments lus dans le fichier entré
 	 * @throws Exception
 	 */
-	public void construireListeSeq() throws Exception {
+	private void construireListeSeq() throws Exception {
 	    BufferedReader lecteurAvecBuffer=null;
 	    String ligne;
 	    String idTmp = "";
+	    int index = 0;
 	    try{
-	    	lecteurAvecBuffer = new BufferedReader(new FileReader(N0mfichier));
+	    	lecteurAvecBuffer = new BufferedReader(new FileReader(nomfichier));
 	    	while ((ligne = lecteurAvecBuffer.readLine())!=null) {
 	    		if(ligne.charAt(0) == '>') {
 	    			idTmp = ligne.substring(1);
 	    		}else {
 	    			if(idTmp != "") {
 		    			Sequence seq = new Sequence(idTmp, ligne);
-		    			ListeDesSequences.add(seq);
+		    			listeDesSequences.add(seq);
+		    			listAncienIndexMatDist.add(index);
+		    			index++;
 		    			idTmp = "";
 	    			}else {
 	    				lecteurAvecBuffer.close();
@@ -67,24 +81,31 @@ public class MatriceDistance {
 	    }
 	}
 	
-	
-	public void distance() {
-		int dim = ListeDesSequences.size();
+	/**
+	 * initialisation de la matrice des distances
+	 */
+	private void distance() {
+		int dim = listeDesSequences.size();
 		distMat = new double [dim][dim];
 		int i;                                   //indice de ligne
 		int j;                                   // indice de colonne
 		double dis;
-		for(i=0; i<dim; i++) {
-			Sequence seq1 = ListeDesSequences.get(i);          
-			for(j=i; j<dim; j++) {
-				//System.out.println(i + "et" + j);
-				Sequence seq2 = ListeDesSequences.get(j);
+		for(i = 0; i < dim; i++) {
+			Sequence seq1 = listeDesSequences.get(i);          
+			for(j = i; j < dim; j++) {
+				Sequence seq2 = listeDesSequences.get(j);
+				
+				/*
 				Alignement2seq alignement = new Alignement2seq(seq1, seq2);
 				alignement.matriceDeScore();
-				//System.out.println("mat de score calculée");
 				alignement.aligner();
-				//System.out.println("alignement fait");
-				dis = 1 - alignement.scoreAlignement();
+				dis = 1 - alignement.scoreAlignement(); 
+				*/
+				
+				Alignement align = new Alignement(seq1, seq2);
+				align.aligner();
+				dis = 1 - align.scoreAlignement();
+				
 				// on attribue à la ligne i et à la colone j le score. Et on attribut le même score à la ligne j et la colonne i
 				distMat[i][j] = dis; 
 				distMat[j][i] = dis;
@@ -100,17 +121,35 @@ public class MatriceDistance {
 		return distMat;
 	}
 	
-	public void afficheMat() {
-		int dim = ListeDesSequences.size();
-		//System.out.println(dim);
-		int i;
-		int j;
-		for (i= 0; i<dim; i++) {
-			for(j = 0; j<dim; j++) {
-				System.out.print(distMat[i][j]);
-			}
-			System.out.println("");
-		}
+	/**
+	 * écrase la valeur de la matrice des distances
+	 * @param distMat
+	 */
+	public void setDistMat(double[][] distMat) {
+		this.distMat = distMat;
 	}
 	
+	/**
+	 * restitue la liste des sequences
+	 * @return
+	 */
+	List<Sequence> getListeDesSequences() {
+		return listeDesSequences;
+	}
+	
+	/**
+	 * assigne la liste contenant les indexs de la précédente matrice
+	 * @param ancienIndexMatDist
+	 */
+	public void setListAncienIndexMatDist(List<Integer> listAncienIndexMatDist) {
+		this.listAncienIndexMatDist = listAncienIndexMatDist;
+	}
+	
+	/**
+	 * restitue la liste contenant les indexs de la précédente matrice
+	 * @return
+	 */
+	List<Integer> getListAncienIndexMatDist() {
+		return listAncienIndexMatDist;
+	}
 }

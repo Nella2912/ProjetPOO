@@ -74,6 +74,9 @@ public class Sequence {
 		return seq.charAt(index);
 	}
 	
+	/**
+	 * permet d'afficher en console pour une séquence, son ID et sa valeur
+	 */
 	public void affiche() {
 		System.out.println(ID + " " + seq);
 	}

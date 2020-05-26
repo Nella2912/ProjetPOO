@@ -3,7 +3,7 @@
  * @author Hornella Fosso-Kahina Lounaci
  *
  */
-public class Alignement2seq implements Aligneur {
+public class Alignement2seq implements Aligneurs {
 	/**
 	 * première Sequence qui doit être alignée
 	 */
@@ -198,6 +198,11 @@ public class Alignement2seq implements Aligneur {
 		System.out.println(s1.getID()+" "+alignementSeq1+ " "+s1.longueur());
 		System.out.println(s2.getID()+" "+alignementSeq2+ " "+s2.longueur());
 	}
+	
+	public String colonne(int index) {
+		return "" + alignementSeq1.charAt(index) + alignementSeq2.charAt(index);
+	}
+	
 	public Sequence getS1() {
 		return s1;
 	}
@@ -218,5 +223,8 @@ public class Alignement2seq implements Aligneur {
 	}
 	public String getAlignementSeq2() {
 		return alignementSeq2;
+	}
+	public int longueur() {
+		return alignementSeq1.length();
 	}
 }
