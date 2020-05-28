@@ -184,6 +184,18 @@ public class AlignementMultiple {
 		System.out.println("*****************************************************************");
 		
 		Communes.afficheMat(constAbr.getmD().getDistMat());*/
+		
+		// parcours de l'arbre :
+		
+		MatriceDistance mat = new MatriceDistance("ADN16S.fasta");
+		mat.initMatriceDistance  ();
+		ConstructionArbre A = new ConstructionArbre(mat);
+		A.upgma();
+		A.getListeArbres();
+		Arbre B = A.getListeArbres().get(0);
+		B.parcourArbre();
+		System.out.print(A.getListeArbres().size());
+		
 	}
 	
 	
