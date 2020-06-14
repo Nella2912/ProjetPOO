@@ -5,12 +5,39 @@
  */
 
 public class Arbre {
+	/**
+	 * Séquence à une feuille de l'arbre
+	 */
 	private Sequence seqCle;
+	
+	/**
+	 * Alignement à un noeud de l'arbre autre qu'une feuille
+	 */
 	private Alignement alignCle;
+	
+	/**
+	 * fils droit d'un noeud
+	 */
 	private Arbre droite;
+	
+	/**
+	 * fils gauche d'un noeud
+	 */
 	private Arbre gauche;
+	
+	/**
+	 * hauteur de fils gauche d'un noeud
+	 */
 	private double hautG;
+	
+	/**
+	 * hauteur de fils droit d'un noeud
+	 */
 	private double hautD;
+	
+	/**
+	 * nbre de feuille d'un noeud
+	 */
 	private int nbreFeuilles;
 	
 	/**

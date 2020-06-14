@@ -12,10 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatriceDistance {
-	
+	/**
+	 * nom du fichier fasta sur lequel se fera le traitement
+	 */
 	private String nomfichier;
+	
+	/**
+	 * Liste contenant la liste des séquences
+	 */
 	private List<Sequence> listeDesSequences;
+	
+	/**
+	 * matrice des distances
+	 */
 	private double [][] distMat;
+	
+	/**
+	 * Listes d'entiers permettant d'avoir les index de la précédentes matrices des distances (utile lors du calcul de la nouvelle matrice des distances)
+	 */
 	private List<Integer> listAncienIndexMatDist;
 	
 	/**
@@ -131,7 +145,7 @@ public class MatriceDistance {
 	}
 	
 	/**
-	 * assigne la liste contenant les indexs de la précédente matrice
+	 * assigne la liste contenant les indexs de la précédente matrice des distances
 	 * @param ancienIndexMatDist
 	 */
 	public void setListAncienIndexMatDist(List<Integer> listAncienIndexMatDist) {
@@ -139,7 +153,7 @@ public class MatriceDistance {
 	}
 	
 	/**
-	 * restitue la liste contenant les indexs de la précédente matrice
+	 * restitue la liste contenant les indexs de la précédente matrice des distances
 	 * @return
 	 */
 	public List<Integer> getListAncienIndexMatDist() {

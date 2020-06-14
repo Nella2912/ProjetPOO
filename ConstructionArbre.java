@@ -12,7 +12,7 @@ public class ConstructionArbre {
 	private List<Arbre> listeArbres;           // Liste des arbres
 	
 	/**
-	 * 
+	 * constructeur prenant en entrée un objet  "matrice de distance"
 	 * @param matDist
 	 */
 	public ConstructionArbre(MatriceDistance matDist) {
@@ -37,13 +37,15 @@ public class ConstructionArbre {
 	}
 	
 	/**
-	 * 
+	 * la fusion des arbres gauche et droit en paramètre en calculant 
+	 *  - les hauteurs des fils gauche et droit
+	 *  - le nombre de feuilles au niveau de chaque noeud
 	 * @param gA
 	 * @param dA
-	 * @param distGD
-	 * @return la fusion des arbres gauche et droit en paramètre
+	 * @param distGD : distance entre fils gauche et fils droit
+	 * @return
 	 */
-	public Arbre fusionAbr(Arbre gA, Arbre dA, double distGD){
+	public Arbre fusionAbre(Arbre gA, Arbre dA, double distGD){
 		try {
 			Arbre pere = new Arbre(null, null, gA, dA);
 			
@@ -219,7 +221,7 @@ public class ConstructionArbre {
 				
 				int distMin[] = this.distMin();                                // On récupère les indexs dans la matrice des distances de la valeur minimale
 				double distGD = matDist[distMin[0]][distMin[1]];              // On prends la distance minimale
-				Arbre abrFusione = this.fusionAbr(listeArbres.get(distMin[0]), listeArbres.get(distMin[1]), distGD);    // On fusionne les arbres
+				Arbre abrFusione = this.fusionAbre(listeArbres.get(distMin[0]), listeArbres.get(distMin[1]), distGD);    // On fusionne les arbres
 				
 				listeArbres.remove(distMin[0]);                              // On supprime les deux indexs min de la liste des arbres
 				listeArbres.remove(distMin[1] - 1);

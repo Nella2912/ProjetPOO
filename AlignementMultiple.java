@@ -20,7 +20,7 @@ public class AlignementMultiple {
 		
 		Arbre A = ctrA.getListeArbres().get(0).parcourArbre();
 		
-		//A.getAlignCle().afficher();
+		A.getAlignCle().afficher();
 		
 		Fenetre fen = new Fenetre(A.getAlignCle());
 		fen.afficher();

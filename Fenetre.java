@@ -76,6 +76,9 @@ public class Fenetre extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
+	/**
+	 * permet de rendre visible la fênetre
+	 */
     public void afficher() {
     	this.setVisible(true);
     }

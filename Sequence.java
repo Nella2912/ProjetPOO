@@ -9,7 +9,7 @@ public class Sequence {
 	/**
 	 * Identifiant de la sequence
 	 */
-	private String ID;
+	private String id;
 	
 	/**
 	 * Sequence
@@ -22,7 +22,7 @@ public class Sequence {
 	 * @param chaine : la sequence
 	 */
 	public Sequence(String identifiant, String chaine) {
-		this.ID = identifiant;
+		this.id = identifiant;
 		this.seq = chaine;
 	}
 	
@@ -31,7 +31,7 @@ public class Sequence {
 	 * @param identifiant: ID de la sequence
 	 */
 	public void setID(String identifiant) {
-		this.ID = identifiant;
+		this.id = identifiant;
 	}
 	
 	/**
@@ -46,15 +46,15 @@ public class Sequence {
 	 * restitue l'identifiant de la sequence
 	 * @return identifiant de la sequence
 	 */
-	public String getID() {
-		return ID;
+	public String getId() {
+		return id;
 	}
 	
 	/**
 	 * restitue la sequence
 	 * @return
 	 */
-	public String getSEQ() {
+	public String getSeq() {
 		return seq;
 	}
 	
@@ -79,6 +79,6 @@ public class Sequence {
 	 * permet d'afficher en console pour une séquence, son ID et sa valeur
 	 */
 	public void affiche() {
-		System.out.println(ID + " " + seq);
+		System.out.println(id + " " + seq);
 	}
 }

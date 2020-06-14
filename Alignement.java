@@ -9,6 +9,21 @@ import java.util.List;
 
 public class Alignement implements IAligneur{
 	/**
+	 * score pour un match extrait de la matrice de substitution NUC4.4
+	 */
+	private final static int  MATCH = 5;
+	
+	/**
+	 * score pour un mismatch extrait de la matrice de substitution NUC4.4
+	 */
+	private final static int MISMATCH = -4;
+	
+	/**
+	 * score pour un gap extrait de la matrice de substitution NUC4.4
+	 */
+	private final static int GAP = -4;
+	
+	/**
 	 * première Sequence qui doit être alignée
 	 */
 	private Sequence s1;
@@ -19,29 +34,14 @@ public class Alignement implements IAligneur{
 	private Sequence s2;
 	
 	/**
-	 * 
+	 * premier alignement qui doit être aligné
 	 */
 	private Alignement aln1;
 	
 	/**
-	 * 
+	 * deuxième alignement qui doit être aligné
 	 */
 	private Alignement aln2;
-	
-	/**
-	 * score pour un match extrait de la matrice de substitution NUC4.4
-	 */
-	private final int  match = 5;
-	
-	/**
-	 * score pour un mismatch extrait de la matrice de substitution NUC4.4
-	 */
-	private final int mismatch = -4;
-	
-	/**
-	 * score pour un gap extrait de la matrice de substitution NUC4.4
-	 */
-	private final int gap = -4;
 	
 	/**
 	 * Matrice des scores à remplir en fonction des deux sequences à aligner 
@@ -52,7 +52,7 @@ public class Alignement implements IAligneur{
 	 * Alignement des objets (séquences ou alignements)
 	 */
 	private List<String> listAlignementSeq;
-		
+	
 	/**
 	 * construction d'un alignement en donnant deux sequences
 	 * @param seq1 première sequence
@@ -103,10 +103,10 @@ public class Alignement implements IAligneur{
 		int ylen = seq1.longueur();
 		
 		for(col = 0; col <= ylen; col++) {                                          // on remplit la première ligne
-			mat[0][col] = gap * col;
+			mat[0][col] = GAP * col;
 		}
 		for(lig = 0; lig <= xlen; lig++) { 										 // on remplit la première colonne
-			mat[lig][0] = gap * lig;
+			mat[lig][0] = GAP * lig;
 		}
 		
 		for (lig = 1; lig <= xlen; lig++) { 
@@ -115,17 +115,17 @@ public class Alignement implements IAligneur{
 					if(seq2.character(lig - 1) == 'N') { // on a N en face de N et donc le score d'alignement est -1
 						NO = mat[lig - 1][col - 1] - 1;
 					} else { // y'a pas de N
-						NO = mat[lig - 1][col - 1] + match;
+						NO = mat[lig - 1][col - 1] + MATCH;
 					}
 		        } else {
 		        	if(seq2.character(lig - 1) == 'N' || seq1.character(col - 1) == 'N') { // on a N en face d'un aa quelconque et donc le score d'alignement est -2
 		        		NO = mat[lig-1][col-1] - 2;           
 		        	} else {
-		        		NO = mat[lig - 1][col - 1] + mismatch;
+		        		NO = mat[lig - 1][col - 1] + MISMATCH;
 		        	}
 		        }
-		        g = mat[lig][col - 1] + gap;
-		        h = mat[lig - 1][col] + gap;
+		        g = mat[lig][col - 1] + GAP;
+		        h = mat[lig - 1][col] + GAP;
 		        max = NO;
 		        if (h > max) max = h;
 		        if (g > max) max = g;
@@ -146,11 +146,11 @@ public class Alignement implements IAligneur{
 		int xlen = seq1.longueur();
 		
 		for(col = 0; col < ylen + 1; col++) {
-			mat[0][col] = gap * col;
+			mat[0][col] = GAP * col;
 		}
 		
 		for(lig = 0; lig < xlen + 1; lig++) {
-			mat[lig][0] = gap * lig;
+			mat[lig][0] = GAP * lig;
 		}
 		
 		for(lig = 1; lig < xlen + 1; lig++) {
@@ -161,19 +161,19 @@ public class Alignement implements IAligneur{
 				for(int i = 0; i < c1.length(); i++) {
 					for(int j = 0; j < c2.length(); j++) {
 						if(c1.charAt(i) == '-' || c2.charAt(j) == '-') {
-							score = score + gap;
+							score = score + GAP;
 						}else {
 							if(c1.charAt(i) == c2.charAt(j)) {
 								if (c1.charAt(i) == 'N') {
 									score = score - 1;
 								}else {
-									score = score + match;
+									score = score + MATCH;
 								}
 							}else {
 								if(c1.charAt(i) == 'N' || c2.charAt(j) == 'N') { 
 									score = score - 2;
 								}else {
-									score = score + mismatch;
+									score = score + MISMATCH;
 								}
 							}
 						}
@@ -197,11 +197,11 @@ public class Alignement implements IAligneur{
 		int xlen = a2.longueur();
 		
 		for(col = 0; col < ylen + 1; col++) {
-			mat[0][col] = gap * col;
+			mat[0][col] = GAP * col;
 		}
 		
 		for(lig = 0; lig < xlen + 1; lig++) {
-			mat[lig][0] = gap * lig;
+			mat[lig][0] = GAP * lig;
 		}
 		
 		for(lig = 1; lig < xlen + 1; lig++) {
@@ -212,19 +212,19 @@ public class Alignement implements IAligneur{
 				for(int i = 0; i < c1.length(); i++) {
 					for(int j = 0; j < c2.length(); j++) {
 						if(c1.charAt(i) == '-' || c2.charAt(j) == '-') {
-							score = score + gap;
+							score = score + GAP;
 						}else {
 							if(c1.charAt(i) == c2.charAt(j)) {
 								if (c1.charAt(i) == 'N') {
 									score = score - 1;
 								}else {
-									score = score + match;
+									score = score + MATCH;
 								}
 							}else {
 								if(c1.charAt(i) == 'N' || c2.charAt(j) == 'N') { 
 									score = score - 2;
 								}else {
-									score = score + mismatch;
+									score = score + MISMATCH;
 								}
 							}
 						}
@@ -272,13 +272,13 @@ public class Alignement implements IAligneur{
 				if(seq2.character(i - 1) == 'N') {
 					scoreNO = scoreNO - 1;
 				}else {
-					scoreNO = scoreNO + match;
+					scoreNO = scoreNO + MATCH;
 				}
 			}else {
 	        	if(seq2.character(i - 1) == 'N' || seq1.character(j - 1) == 'N') {
 	        		scoreNO = scoreNO - 2;
 	        	}else {
-	        		scoreNO = scoreNO + mismatch;
+	        		scoreNO = scoreNO + MISMATCH;
 	        	}
 			}
 			
@@ -288,7 +288,7 @@ public class Alignement implements IAligneur{
 				i--;
 				j--;
 			}else {
-				if(score == scoreG + gap) {
+				if(score == scoreG + GAP) {
 					alignementSeq1 = seq1.character(j - 1) + alignementSeq1;
 					alignementSeq2 = '-' + alignementSeq2;
 					j--;
@@ -337,35 +337,9 @@ public class Alignement implements IAligneur{
 		}
 		
 		while(i > 0 && j > 0) {
-			double scoreH = mat[i - 1][j] + gap;
-			double scoreG = mat[i][j - 1] + gap;
+			double scoreH = mat[i - 1][j] + GAP;
+			double scoreG = mat[i][j - 1] + GAP;
 			double scoreNO = mat[i - 1][j - 1];
-			
-			/*
-			String c1 = seq1.character(i - 1) + "";
-			String c2 = a1.colonne(j - 1);
-			for(int abs = 0; abs < c1.length(); abs++) {
-				for(int ord = 0; ord < c2.length(); ord++) {
-					if(c1.charAt(abs) == '-' || c2.charAt(ord) == '-') {
-						scoreNO = scoreNO + gap;
-					}else {
-						if(c1.charAt(abs) == c2.charAt(ord)) {
-							if (c1.charAt(abs) == 'N') {
-								scoreNO = scoreNO - 1;
-							}else {
-								scoreNO = scoreNO + match;
-							}
-						}else {
-							if(c1.charAt(abs) == 'N' || c2.charAt(ord) == 'N') { 
-								scoreNO = scoreNO - 2;
-							}else {
-								scoreNO = scoreNO + mismatch;
-							}
-						}
-					}
-				}
-			}
-			*/
 		
 			double max = Math.max(scoreNO, Math.max(scoreG, scoreH));
 			
@@ -428,35 +402,9 @@ public class Alignement implements IAligneur{
 		}
 		
 		while(i > 0 && j > 0) {
-			double scoreH = mat[i - 1][j] + gap;
-			double scoreG = mat[i][j - 1] + gap;
+			double scoreH = mat[i - 1][j] + GAP;
+			double scoreG = mat[i][j - 1] + GAP;
 			double scoreNO = mat[i - 1][j - 1];
-			
-			/*
-			String c1 = a2.colonne(i - 1);
-			String c2 = a1.colonne(j - 1);
-			for(int abs = 0; abs < c1.length(); abs++) {
-				for(int ord = 0; ord < c2.length(); ord++) {
-					if(c1.charAt(abs) == '-' || c2.charAt(ord) == '-') {
-						scoreNO = scoreNO + gap;
-					}else {
-						if(c1.charAt(abs) == c2.charAt(ord)) {
-							if (c1.charAt(abs) == 'N') {
-								scoreNO = scoreNO - 1;
-							}else {
-								scoreNO = scoreNO + match;
-							}
-						}else {
-							if(c1.charAt(abs) == 'N' || c2.charAt(ord) == 'N') { 
-								scoreNO = scoreNO - 2;
-							}else {
-								scoreNO = scoreNO + mismatch;
-							}
-						}
-					}
-				}
-			}
-			*/
 			
 			double max = Math.max(scoreNO, Math.max(scoreG, scoreH));
 			
@@ -514,20 +462,6 @@ public class Alignement implements IAligneur{
 	 * affiche le résultat de l'alignement
 	 */
 	public void afficher() {
-		/*
-		if (this.aln1 == null && this.aln2 == null) {
-			System.out.println(this.s1.getID() + " " + this.listAlignementSeq.get(0) + " " + this.s1.longueur());
-			System.out.println(this.s2.getID() + " " + this.listAlignementSeq.get(1) + " " + this.s2.longueur());
-		} else {
-			if (this.aln2 == null) {
-				this.aln1.afficher();
-				System.out.println(this.s1.getID() + " " + this.listAlignementSeq.get(listAlignementSeq.size() - 1) + " " + this.s1.longueur());
-			} else {
-				this.aln1.afficher();
-				this.aln2.afficher();
-			}
-		}
-		*/
 		for(String str : this.listAlignementSeq) {
 			System.out.println(str);
 		}
@@ -557,7 +491,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * retourne la longueur de l'alignement
 	 * @return
 	 */
 	public int longueur() {
@@ -565,7 +499,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * renvoi la colonne d'indice "index" d'un alignement
 	 * @param index
 	 * @return
 	 */
@@ -578,7 +512,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * retourne la matrice des scores mat
 	 * @return
 	 */
 	public double[][] getMat() {
@@ -586,7 +520,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * retourne la séquence s1
 	 * @return
 	 */
 	public Sequence getS1() {
@@ -594,7 +528,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * retourne la séquence s2
 	 * @return
 	 */
 	public Sequence getS2() {
@@ -602,7 +536,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * retourne l'alignement aln1
 	 * @return
 	 */
 	public Alignement getAln1() {
@@ -610,7 +544,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * retourne l'alignement aln2
 	 * @return
 	 */
 	public Alignement getAln2() {
@@ -618,7 +552,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * retourne la liste contenant les différentes lignes d'un alignements
 	 * @return
 	 */
 	public List<String> getListAlignementSeq() {
@@ -626,7 +560,7 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * assigne la liste contenant les différentes lignes d'un alignements
 	 * @param listAlignementSeq
 	 */
 	public void setListAlignementSeq(List<String> listAlignementSeq) {
@@ -634,26 +568,26 @@ public class Alignement implements IAligneur{
 	}
 	
 	/**
-	 * 
+	 * retourne la valeur du match
 	 * @return
 	 */
-	public int getMatch() {
-		return match;
+	public int getMATCH() {
+		return MATCH;
 	}
 	
 	/**
-	 * 
+	 * retourne la valeur du mismatch
 	 * @return
 	 */
-	public int getMismatch() {
-		return mismatch;
+	public int getMISMATCH() {
+		return MISMATCH;
 	}
 	
 	/**
-	 * 
+	 * retourne la valeur du Gap
 	 * @return
 	 */
-	public int getGap() {
-		return gap;
+	public int getGAP() {
+		return GAP;
 	}
 }
