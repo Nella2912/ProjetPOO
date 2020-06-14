@@ -1,11 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * modelise les alignements (Sequence => Sequence, Alignement<=> Sequence, Alignement <=> Alignement)
  * @author Hornella Fosso-Kahina Lounaci
  *
  */
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Alignement implements IAligneur{
 	/**
 	 * première Sequence qui doit être alignée
@@ -60,7 +61,7 @@ public class Alignement implements IAligneur{
 	public Alignement(Sequence seq1, Sequence seq2) {
 		this.s1 = seq1;
 		this.s2 = seq2;
-		this.mat = new double [seq1.longueur() + 1][seq2.longueur() + 1];
+		this.mat = new double [seq2.longueur() + 1][seq1.longueur() + 1];
 		this.listAlignementSeq = new ArrayList<String>();
 	}
 	
@@ -98,8 +99,8 @@ public class Alignement implements IAligneur{
 		int lig, col;                                                                    // index de la matrice
 		double NO, h, g;                                                                    // éléments parmis lesquels on cherche le max
 		double max;
-		int xlen = seq1.longueur();
-		int ylen = seq2.longueur();
+		int xlen = seq2.longueur();
+		int ylen = seq1.longueur();
 		
 		for(col = 0; col <= ylen; col++) {                                          // on remplit la première ligne
 			mat[0][col] = gap * col;
@@ -110,24 +111,25 @@ public class Alignement implements IAligneur{
 		
 		for (lig = 1; lig <= xlen; lig++) { 
 			for (col = 1; col <= ylen; col++) {
-				if (seq1.character(lig - 1) == seq2.character(col - 1)) {
-					//if(s1.character(lig-1) == 'N') { // on a N en face de N et donc le score d'alignement est -1
-					//	NO = mat[lig-1][col-1] - 1;
-					//}else { // y'a pas de N
+				if (seq2.character(lig - 1) == seq1.character(col - 1)) {
+					if(seq2.character(lig - 1) == 'N') { // on a N en face de N et donc le score d'alignement est -1
+						NO = mat[lig - 1][col - 1] - 1;
+					} else { // y'a pas de N
 						NO = mat[lig - 1][col - 1] + match;
-					//}
-		        }else {
-		        	//if(s1.character(lig-1) == 'N' || s2.character(col-1) == 'N') { // on a N en face d'un aa quelconque et donc le score d'alignement est -2
-		        	//	NO = mat[lig-1][col-1] - 2;           
-		        	//}
-		        	NO = mat[lig - 1][col - 1] + mismatch;
+					}
+		        } else {
+		        	if(seq2.character(lig - 1) == 'N' || seq1.character(col - 1) == 'N') { // on a N en face d'un aa quelconque et donc le score d'alignement est -2
+		        		NO = mat[lig-1][col-1] - 2;           
+		        	} else {
+		        		NO = mat[lig - 1][col - 1] + mismatch;
+		        	}
 		        }
 		        g = mat[lig][col - 1] + gap;
 		        h = mat[lig - 1][col] + gap;
 		        max = NO;
 		        if (h > max) max = h;
 		        if (g > max) max = g;
-		        mat[lig][col] = max;		        
+		        mat[lig][col] = max;
 	      	}
 		}
 	}
@@ -162,14 +164,22 @@ public class Alignement implements IAligneur{
 							score = score + gap;
 						}else {
 							if(c1.charAt(i) == c2.charAt(j)) {
-								score = score + match;
+								if (c1.charAt(i) == 'N') {
+									score = score - 1;
+								}else {
+									score = score + match;
+								}
 							}else {
-								score = score + mismatch;
+								if(c1.charAt(i) == 'N' || c2.charAt(j) == 'N') { 
+									score = score - 2;
+								}else {
+									score = score + mismatch;
+								}
 							}
 						}
 					}
 				}
-				score = score /(a1.longueur() * seq1.longueur());
+				score = score /(ylen * xlen);
 				mat[lig][col] = score;
 			}
 		}
@@ -205,20 +215,30 @@ public class Alignement implements IAligneur{
 							score = score + gap;
 						}else {
 							if(c1.charAt(i) == c2.charAt(j)) {
-								score = score + match;
+								if (c1.charAt(i) == 'N') {
+									score = score - 1;
+								}else {
+									score = score + match;
+								}
 							}else {
-								score = score + mismatch;
+								if(c1.charAt(i) == 'N' || c2.charAt(j) == 'N') { 
+									score = score - 2;
+								}else {
+									score = score + mismatch;
+								}
 							}
 						}
 					}
 				}
-				score = score /(a1.longueur() * a2.longueur());
+				score = score /(ylen * xlen);
 				mat[lig][col] = score;
 			}
 		}
 	}
 	
-	
+	/**
+	 * methode pour le declenchement des alignements en fonction des cas trouvé : (Sequence => Sequence, Alignement<=> Sequence, Alignement <=> Alignement)
+	 */
 	public void aligner() {
 		if (this.aln1 == null && this.aln2 == null) {
 			this.aligner(this.s1, this.s2);
@@ -242,59 +262,54 @@ public class Alignement implements IAligneur{
 		
 		// Alignement des deux séquences
 		String alignementSeq1 = "", alignementSeq2 = "";
-		int i = seq1.longueur();
-		int j = seq2.longueur();
+		int i = seq2.longueur();
+		int j = seq1.longueur();
 		while(i > 0 && j > 0) {
-			//System.out.println(i + "et" +j);
 			double score = mat[i][j];
-			//double scoreH = mat[i][j - 1];
 			double scoreG = mat[i - 1][j];
-			double scoreNO;
-			if (seq1.character(i - 1) == seq2.character(j - 1)) {
-				/*if(s1.character(i-1) == 'N') {
-					System.out.println("je rencontre N 2 fois");
-					scoreNO = mat[i-1][j-1] - 1;
-				}else {*/
-					scoreNO = mat[i - 1][j - 1] + match;
-				//}
+			double scoreNO = mat[i - 1][j - 1];
+			if (seq2.character(i - 1) == seq1.character(j - 1)) {
+				if(seq2.character(i - 1) == 'N') {
+					scoreNO = scoreNO - 1;
+				}else {
+					scoreNO = scoreNO + match;
+				}
 			}else {
-	        	/*if(s1.character(i-1) == 'N' || s2.character(j-1) == 'N') {
-	        		System.out.println("je rencontre N 1 fois");
-	        		scoreNO = mat[i-1][j-1] - 2;
-	        	}else {*/
-	        		scoreNO = mat[i - 1][j - 1] + mismatch;
-	        	//}
+	        	if(seq2.character(i - 1) == 'N' || seq1.character(j - 1) == 'N') {
+	        		scoreNO = scoreNO - 2;
+	        	}else {
+	        		scoreNO = scoreNO + mismatch;
+	        	}
 			}
+			
 			if(score == scoreNO) {
-				alignementSeq1 = seq1.character(i - 1) + alignementSeq1;
-				alignementSeq2 = seq2.character(j - 1) + alignementSeq2;
+				alignementSeq1 = seq1.character(j - 1) + alignementSeq1;
+				alignementSeq2 = seq2.character(i - 1) + alignementSeq2;
 				i--;
 				j--;
-				//System.out.println("je decremente i et j");
 			}else {
 				if(score == scoreG + gap) {
-					alignementSeq1 = seq1.character(i - 1) + alignementSeq1;
+					alignementSeq1 = seq1.character(j - 1) + alignementSeq1;
 					alignementSeq2 = '-' + alignementSeq2;
-					//System.out.println("je decremente i");
-					i--;
+					j--;
 				}else{                                                         //(score == scoreH + gap)
 					alignementSeq1 = '-' + alignementSeq1;
-					alignementSeq2 = seq2.character(j - 1) + alignementSeq2;
-					j--;
-					//System.out.println("je decremente j");
+					alignementSeq2 = seq2.character(i - 1) + alignementSeq2;
+					i--;
 				}
 			}
 		}
-		while(i > 0) {
-			alignementSeq1 = seq1.character(i - 1) + alignementSeq1;
-			alignementSeq2 = '-' + alignementSeq2;
-			i--;
-		}
 		
 		while(j > 0) {
-			alignementSeq1 = '-' + alignementSeq1;
-			alignementSeq2 = seq2.character(j - 1) + alignementSeq2;
+			alignementSeq1 = seq1.character(j - 1) + alignementSeq1;
+			alignementSeq2 = '-' + alignementSeq2;
 			j--;
+		}
+		
+		while(i > 0) {
+			alignementSeq1 = '-' + alignementSeq1;
+			alignementSeq2 = seq2.character(i - 1) + alignementSeq2;
+			i--;
 		}
 		
 		this.listAlignementSeq.add(alignementSeq1);
@@ -322,97 +337,64 @@ public class Alignement implements IAligneur{
 		}
 		
 		while(i > 0 && j > 0) {
-			//System.out.println(i + " ====> " + j);
-			//System.out.println(seq1.character(i - 1) + " ====> " + a1.colonne(j - 1));
-			//double score = mat[i][j];
-			//System.out.println(score);
 			double scoreH = mat[i - 1][j] + gap;
-			//System.out.println(scoreH);
 			double scoreG = mat[i][j - 1] + gap;
-			//System.out.println(scoreG);
 			double scoreNO = mat[i - 1][j - 1];
 			
 			/*
-			if (a1.colonne(j - 1).equals(a2.colonne(i - 1))) {
-				scoreNO = scoreNO + match;
-			} else {
-	        	scoreNO = scoreNO + mismatch;
+			String c1 = seq1.character(i - 1) + "";
+			String c2 = a1.colonne(j - 1);
+			for(int abs = 0; abs < c1.length(); abs++) {
+				for(int ord = 0; ord < c2.length(); ord++) {
+					if(c1.charAt(abs) == '-' || c2.charAt(ord) == '-') {
+						scoreNO = scoreNO + gap;
+					}else {
+						if(c1.charAt(abs) == c2.charAt(ord)) {
+							if (c1.charAt(abs) == 'N') {
+								scoreNO = scoreNO - 1;
+							}else {
+								scoreNO = scoreNO + match;
+							}
+						}else {
+							if(c1.charAt(abs) == 'N' || c2.charAt(ord) == 'N') { 
+								scoreNO = scoreNO - 2;
+							}else {
+								scoreNO = scoreNO + mismatch;
+							}
+						}
+					}
+				}
 			}
 			*/
 		
 			double max = Math.max(scoreNO, Math.max(scoreG, scoreH));
 			
-			//System.out.println(scoreNO);
-			
 			if(max == scoreNO) {
-				count = a1.getListAlignementSeq().size();
-				for (int l = 0; l < count; l++) {
-					String strtmp = tmpListAln1.get(l);
-					strtmp = a1.getListAlignementSeq().get(l).charAt(j - 1) + strtmp;
-					tmpListAln1.remove(l);
-					tmpListAln1.add(l, strtmp);
-				}
-				
+				tmpListAln1 = miseAJourListAlignementSeq(a1, count, j, tmpListAln1);
 				alignementSeq1 = seq1.character(i - 1) + alignementSeq1;
-				
 				i--;
 				j--;
-				//System.out.println("je decremente i et j");
 			}else {
 				if(max == scoreG){
-					count = a1.getListAlignementSeq().size();
-					for (int l = 0; l < count; l++) {
-						String strtmp = tmpListAln1.get(l);
-						strtmp = a1.getListAlignementSeq().get(l).charAt(j - 1) + strtmp;
-						tmpListAln1.remove(l);
-						tmpListAln1.add(l, strtmp);
-					}
-					
+					tmpListAln1 = miseAJourListAlignementSeq(a1, count, j, tmpListAln1);
 					alignementSeq1 = "-" + alignementSeq1;
-					
 					j--;
-					//System.out.println("je decremente j");
 				}else{                                                    //(max == scoreH)
-					count = a1.getListAlignementSeq().size();
-					for (int l = 0; l < count; l++) {
-						String strtmp = tmpListAln1.get(l);
-						strtmp = "-" + strtmp;
-						tmpListAln1.remove(l);
-						tmpListAln1.add(l, strtmp);
-					}
-					
+					tmpListAln1 = miseAJourListAlignementSeq(a1, count, -1, tmpListAln1);				
 					alignementSeq1 = seq1.character(i - 1) + alignementSeq1;
-					
-					//System.out.println("je decremente i");
 					i--;
 				}
 			}
 		}
 		while(j > 0) {
-			count = a1.getListAlignementSeq().size();
-			for (int l = 0; l < count; l++) {
-				String strtmp = tmpListAln1.get(l);
-				strtmp = a1.getListAlignementSeq().get(l).charAt(j - 1) + strtmp;
-				tmpListAln1.remove(l);
-				tmpListAln1.add(l, strtmp);
-			}
-			
+			tmpListAln1 = miseAJourListAlignementSeq(a1, count, j, tmpListAln1);
 			alignementSeq1 = "-" + alignementSeq1;
-			
 			j--;
 		}
 		
 		while(i > 0) {
-			count = a1.getListAlignementSeq().size();
-			for (int l = 0; l < count; l++) {
-				String strtmp = tmpListAln1.get(l);
-				strtmp = "-" + strtmp;
-				tmpListAln1.remove(l);
-				tmpListAln1.add(l, strtmp);
-			}
-			
+			tmpListAln1 = miseAJourListAlignementSeq(a1, count, -1, tmpListAln1);
 			alignementSeq1 = seq1.character(i - 1) + alignementSeq1;
-			
 			i--;
 		}
 		
@@ -434,140 +416,76 @@ public class Alignement implements IAligneur{
 		int j = a1.longueur();
 		
 		List<String> tmpListAln1 = new ArrayList<String>();
-		int count = a1.getListAlignementSeq().size();
-		for (int l = 0; l < count; l++) {
+		int countA1 = a1.getListAlignementSeq().size();
+		for (int l = 0; l < countA1; l++) {
 			tmpListAln1.add("");
 		}
 		
 		List<String> tmpListAln2 = new ArrayList<String>();
-		count = a2.getListAlignementSeq().size();
-		for (int l = 0; l < count; l++) {
+		int countA2 = a2.getListAlignementSeq().size();
+		for (int l = 0; l < countA2; l++) {
 			tmpListAln2.add("");
 		}
 		
 		while(i > 0 && j > 0) {
-			//System.out.println(i + " ====> " + j);
-			//System.out.println(a2.colonne(i - 1) + " ====> " + a1.colonne(j - 1));
-			//double score = mat[i][j];
-			//System.out.println(score);
 			double scoreH = mat[i - 1][j] + gap;
-			//System.out.println(scoreH);
 			double scoreG = mat[i][j - 1] + gap;
-			//System.out.println(scoreG);
 			double scoreNO = mat[i - 1][j - 1];
 			
 			/*
-			if (a1.colonne(j - 1).equals(a2.colonne(i - 1))) {
-				scoreNO = scoreNO + match;
-			} else {
-	        	scoreNO = scoreNO + mismatch;
+			String c1 = a2.colonne(i - 1);
+			String c2 = a1.colonne(j - 1);
+			for(int abs = 0; abs < c1.length(); abs++) {
+				for(int ord = 0; ord < c2.length(); ord++) {
+					if(c1.charAt(abs) == '-' || c2.charAt(ord) == '-') {
+						scoreNO = scoreNO + gap;
+					}else {
+						if(c1.charAt(abs) == c2.charAt(ord)) {
+							if (c1.charAt(abs) == 'N') {
+								scoreNO = scoreNO - 1;
+							}else {
+								scoreNO = scoreNO + match;
+							}
+						}else {
+							if(c1.charAt(abs) == 'N' || c2.charAt(ord) == 'N') { 
+								scoreNO = scoreNO - 2;
+							}else {
+								scoreNO = scoreNO + mismatch;
+							}
+						}
+					}
+				}
 			}
 			*/
 			
 			double max = Math.max(scoreNO, Math.max(scoreG, scoreH));
 			
-			//System.out.println(scoreNO);
-			
 			if(max == scoreNO) {
-				count = a1.getListAlignementSeq().size();
-				for (int l = 0; l < count; l++) {
-					String strtmp = tmpListAln1.get(l);
-					strtmp = a1.getListAlignementSeq().get(l).charAt(j - 1) + strtmp;
-					tmpListAln1.remove(l);
-					tmpListAln1.add(l, strtmp);
-				}
-				
-				count = a2.getListAlignementSeq().size();
-				for (int l = 0; l < count; l++) {
-					String strtmp = tmpListAln2.get(l);
-					strtmp = a2.getListAlignementSeq().get(l).charAt(i - 1) + strtmp;
-					tmpListAln2.remove(l);
-					tmpListAln2.add(l, strtmp);
-				}
-				
+				tmpListAln1 = miseAJourListAlignementSeq(a1, countA1, j, tmpListAln1);
+				tmpListAln2 = miseAJourListAlignementSeq(a2, countA2, i, tmpListAln2);
 				i--;
 				j--;
-				//System.out.println("je decremente i et j");
 			}else {
 				if(max == scoreG){
-					count = a1.getListAlignementSeq().size();
-					for (int l = 0; l < count; l++) {
-						String strtmp = tmpListAln1.get(l);
-						strtmp = a1.getListAlignementSeq().get(l).charAt(j - 1) + strtmp;
-						tmpListAln1.remove(l);
-						tmpListAln1.add(l, strtmp);
-					}
-					
-					count = a2.getListAlignementSeq().size();
-					for (int l = 0; l < count; l++) {
-						String strtmp = tmpListAln2.get(l);
-						strtmp = "-" + strtmp;
-						tmpListAln2.remove(l);
-						tmpListAln2.add(l, strtmp);
-					}
-					
+					tmpListAln1 = miseAJourListAlignementSeq(a1, countA1, j, tmpListAln1);
+					tmpListAln2 = miseAJourListAlignementSeq(a2, countA2, -1, tmpListAln2);
 					j--;
-					//System.out.println("je decremente j");
 				}else{                                                    //(max == scoreH)
-					count = a1.getListAlignementSeq().size();
-					for (int l = 0; l < count; l++) {
-						String strtmp = tmpListAln1.get(l);
-						strtmp = "-" + strtmp;
-						tmpListAln1.remove(l);
-						tmpListAln1.add(l, strtmp);
-					}
-					
-					count = a2.getListAlignementSeq().size();
-					for (int l = 0; l < count; l++) {
-						String strtmp = tmpListAln2.get(l);
-						strtmp = a2.getListAlignementSeq().get(l).charAt(i - 1) + strtmp;
-						tmpListAln2.remove(l);
-						tmpListAln2.add(l, strtmp);
-					}
-					
-					//System.out.println("je decremente i");
+					tmpListAln1 = miseAJourListAlignementSeq(a1, countA1, -1, tmpListAln1);
+					tmpListAln2 = miseAJourListAlignementSeq(a2, countA2, i, tmpListAln2);
 					i--;
 				}
 			}
-			//i = j = 0;
 		}
 		while(j > 0) {
-			count = a1.getListAlignementSeq().size();
-			for (int l = 0; l < count; l++) {
-				String strtmp = tmpListAln1.get(l);
-				strtmp = a1.getListAlignementSeq().get(l).charAt(j - 1) + strtmp;
-				tmpListAln1.remove(l);
-				tmpListAln1.add(l, strtmp);
-			}
-			
-			count = a2.getListAlignementSeq().size();
-			for (int l = 0; l < count; l++) {
-				String strtmp = tmpListAln2.get(l);
-				strtmp = "-" + strtmp;
-				tmpListAln2.remove(l);
-				tmpListAln2.add(l, strtmp);
-			}
-			
+			tmpListAln1 = miseAJourListAlignementSeq(a1, countA1, j, tmpListAln1);
+			tmpListAln2 = miseAJourListAlignementSeq(a2, countA2, -1, tmpListAln2);
 			j--;
 		}
 		
 		while(i > 0) {
-			count = a1.getListAlignementSeq().size();
-			for (int l = 0; l < count; l++) {
-				String strtmp = tmpListAln1.get(l);
-				strtmp = "-" + strtmp;
-				tmpListAln1.remove(l);
-				tmpListAln1.add(l, strtmp);
-			}
-			
-			count = a2.getListAlignementSeq().size();
-			for (int l = 0; l < count; l++) {
-				String strtmp = tmpListAln2.get(l);
-				strtmp = a2.getListAlignementSeq().get(l).charAt(i - 1) + strtmp;
-				tmpListAln2.remove(l);
-				tmpListAln2.add(l, strtmp);
-			}
-			
+			tmpListAln1 = miseAJourListAlignementSeq(a1, countA1, -1, tmpListAln1);
+			tmpListAln2 = miseAJourListAlignementSeq(a2, countA2, i, tmpListAln2);
 			i--;
 		}
 		
@@ -583,27 +501,13 @@ public class Alignement implements IAligneur{
 		double score = 0.0;
 		int i;
 		int lon = this.listAlignementSeq.get(0).length();
-		for (i = 0; i<lon; i++) {
+		for (i = 0; i < lon; i++) {
 			if(this.listAlignementSeq.get(0).charAt(i) == this.listAlignementSeq.get(1).charAt(i)) {
-				/*if(alignementSeq1.charAt(i) == 'N') {
-					score = score - 1;
-				}else {*/
-					score = score + 1; //match;
-				//}
-			}/*else {
-				if(alignementSeq1.charAt(i) == '-' || alignementSeq2.charAt(i) == '-') {
-					score = score + gap;
-				}else {
-					if(alignementSeq1.charAt(i) == 'N' || alignementSeq2.charAt(i) == 'N') {
-						score = score - 2;
-					}else {
-						score = score + mismatch;
-					}
-				}
-			}*/
+				score = score + 1;
+			}
 		}
 		score = ((score/lon) * 10000)/10000;
-		return score;///alignementSeq1.length();
+		return score;
 	}
 	
 	/**
@@ -624,10 +528,32 @@ public class Alignement implements IAligneur{
 			}
 		}
 		*/
-		
 		for(String str : this.listAlignementSeq) {
 			System.out.println(str);
 		}
+	}
+	
+	/**
+	 * fontion pour mettre à jour les alignements des séquences dans la liste des alignements de séquences pour un alignement donné.
+	 * @param al
+	 * @param count
+	 * @param index
+	 * @param tmpListAln
+	 * @return
+	 */
+	private List<String> miseAJourListAlignementSeq(Alignement al, int count,  int index, List<String> tmpListAln) {
+		for (int l = 0; l < count; l++) {
+			String strtmp = tmpListAln.get(l);
+			if(index < 0) {
+				strtmp = "-" + strtmp;
+			} else {
+				strtmp = al.getListAlignementSeq().get(l).charAt(index - 1) + strtmp;
+			}
+			tmpListAln.remove(l);
+			tmpListAln.add(l, strtmp);
+		}
+		
+		return tmpListAln;
 	}
 	
 	/**

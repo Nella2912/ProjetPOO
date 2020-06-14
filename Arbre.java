@@ -5,21 +5,18 @@
  */
 
 public class Arbre {
-	private String cle;
-	Sequence seqCle;
-	Alignement alignCle;
+	private Sequence seqCle;
+	private Alignement alignCle;
 	private Arbre droite;
 	private Arbre gauche;
 	private double hautG;
 	private double hautD;
 	private int nbreFeuilles;
-	private Arbre pere;
 	
 	/**
 	 * constructeur Arbre vide
 	 */
 	public Arbre(){
-		this.cle = "";
 		this.seqCle = null;
 		this.alignCle = null;
 		this.droite = null;
@@ -27,48 +24,15 @@ public class Arbre {
 		this.hautD = 0;
 		this.hautG = 0;
 		this.nbreFeuilles = 1;
-		this.pere = null;
 	}
-	public Alignement parcourArbre() {
-		/*
-		Arbre A =new Arbre();
-		A=listeArbres.get(0); recupere l'arbre en entier construit
-		*/
-		Arbre A1 = this.gauche;
-		Arbre A2 = this.droite;
-		
-		System.out.println("rien");
-		if(A1.gauche==null){System.out.println("merde1");}
-		if(A2==null){System.out.println("merde2");}
-		
-		if(A1 ==null && A2==null){
-			
-			Alignement AS = new Alignement(A1.pere.seqCle,A2.pere.seqCle);
-			AS.aligner(); // alignement au niveau des feuilles
-			System.out.println("merdeif");
-			return AS;
-		}
-		else {
-			System.out.println("merde");
-			Alignement AS1 = A1.parcourArbre();
-			
-			AS1.aligner();
-			
-			Alignement AS2 = A2.parcourArbre();
-			AS2.aligner();
-			Alignement AS = new Alignement(AS1,AS2);
-		
-			return AS;
-		}
-	}	
+	
 	/**
 	 * constructeur arbre avec deux arbres en paramètres
 	 * @param id
 	 * @param g
 	 * @param d
 	 */
-	public Arbre(String id, Sequence seq, Alignement al, Arbre g, Arbre d){
-		this.cle = id;
+	public Arbre(Sequence seq, Alignement al, Arbre g, Arbre d){
 		this.seqCle = seq;
 		this.alignCle = al;
 		this.droite = d;
@@ -76,30 +40,77 @@ public class Arbre {
 		this.hautD = 0;
 		this.hautG = 0;
 		this.nbreFeuilles = 1;
-		this.pere = null;
 	}
 	
 	/**
-	 * restitue la clé de l'arbre
+	 * fonction faisant le parcours de l'arbre et les alignements à chaque noeud de l'arbre
+	 * @param abr
 	 * @return
 	 */
-	public String getCle(){
-		return(cle);
+	public Arbre parcourArbre() {
+		if (this.gauche == null && this.droite == null) {
+			return this;
+		}
+		
+		this.gauche = this.gauche.parcourArbre();
+		this.droite = this.droite.parcourArbre();
+		Alignement al = initAlignementAbr(this);
+		al.aligner();
+		this.alignCle = al;
+		
+		return this;
+	}
+	
+	/**
+	 * fonction permettant d'initialiser un alignement lors du parcours de l'arbre
+	 * @param abr
+	 * @return
+	 */
+	private Alignement initAlignementAbr(Arbre abr) {
+		if (abr.gauche.seqCle != null && abr.droite.seqCle != null) {
+			return new Alignement(abr.gauche.seqCle, abr.droite.seqCle);
+		} else {
+			if (abr.gauche.seqCle != null && abr.droite.seqCle == null) {
+				return new Alignement(abr.droite.alignCle, abr.gauche.seqCle);
+			} else {
+				if (abr.gauche.seqCle == null && abr.droite.seqCle != null) {
+					return new Alignement(abr.gauche.alignCle, abr.droite.seqCle);
+				} else {
+					return new Alignement(abr.gauche.alignCle, abr.droite.alignCle);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * assigne l'arbre droit
+	 * @param droite
+	 */
+	public void setDroite(Arbre droite) {
+		this.droite = droite;
 	}
 	
 	/**
 	 * restitue l'arbre droit
 	 * @return
 	 */
-	Arbre getDroite() {
+	public Arbre getDroite() {
 		return droite;
+	}
+	
+	/**
+	 * assigne l'arbre gauche
+	 * @param gauche
+	 */
+	public void setGauche(Arbre gauche) {
+		this.gauche = gauche;
 	}
 	
 	/**
 	 * restitue l'arbre gauche
 	 * @return
 	 */
-	Arbre getGauche() {
+	public Arbre getGauche() {
 		return gauche;
 	}
 	
@@ -152,18 +163,34 @@ public class Arbre {
 	}
 	
 	/**
-	 * assigne le pere du noeud courant
-	 * @param pere
+	 * assigne la clé de séquence au niveau des noeuds
+	 * @param seqCle
 	 */
-	public void setPere(Arbre pere) {
-		this.pere = pere;
+	public void setSeqCle(Sequence seqCle) {
+		this.seqCle = seqCle;
 	}
 	
 	/**
-	 * retourne le pere courant
+	 * retourne la clé de séquence au niveau des noeuds
 	 * @return
 	 */
-	public Arbre getPere() {
-		return pere;
+	public Sequence getSeqCle() {
+		return seqCle;
+	}
+	
+	/**
+	 * retourne la clé d'alignement au niveau des noeuds
+	 * @return
+	 */
+	public Alignement getAlignCle() {
+		return alignCle;
+	}
+	
+	/**
+	 * assigne la clé d'alignement au niveau des noeuds
+	 * @param alignCle
+	 */
+	public void setAlignCle(Alignement alignCle) {
+		this.alignCle = alignCle;
 	}
 }

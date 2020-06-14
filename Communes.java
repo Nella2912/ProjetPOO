@@ -3,6 +3,7 @@
  * @author Hornella Fosso-Kahina Lounaci
  *
  */
+
 public class Communes {
 	/**
 	 * fonction prennant une matrice carrée en entrée et l'affiche à la console
@@ -17,17 +18,5 @@ public class Communes {
 			}
 			System.out.println("");
 		}
-	}
-	
-	public static Boolean allCharacterEquals(String chaineATester) {
-		Boolean result = true;
-		int i = 1;
-		while (result && i < chaineATester.length()){
-			if(chaineATester.charAt(i - 1) != chaineATester.charAt(i)){
-				result = false;
-			}
-			i++;
-		}
-		return result;
 	}
 }

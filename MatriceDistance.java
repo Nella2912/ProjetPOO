@@ -1,3 +1,9 @@
+/**
+ * lit les séquences dans un fichier teste, effectue l'alignement deux par deux  et construit une matrice des distances à partir des scores d'alignements.
+ * @author Hornella Fosso-Kahina Lounaci
+ *
+ */
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -5,11 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * lit les séquences dans un fichier teste, effectue l'alignement deux par deux  et construit une matrice des distances à partir des scores d'alignements.
- * @author Hornella Fosso-Kahina Lounaci
- *
- */
 public class MatriceDistance {
 	
 	private String nomfichier;
@@ -87,21 +88,13 @@ public class MatriceDistance {
 	private void distance() {
 		int dim = listeDesSequences.size();
 		distMat = new double [dim][dim];
-		int i;                                   //indice de ligne
+		int i;                                   // indice de ligne
 		int j;                                   // indice de colonne
 		double dis;
 		for(i = 0; i < dim; i++) {
 			Sequence seq1 = listeDesSequences.get(i);          
 			for(j = i; j < dim; j++) {
-				Sequence seq2 = listeDesSequences.get(j);
-				
-				/*
-				Alignement2seq alignement = new Alignement2seq(seq1, seq2);
-				alignement.matriceDeScore();
-				alignement.aligner();
-				dis = 1 - alignement.scoreAlignement(); 
-				*/
-				
+				Sequence seq2 = listeDesSequences.get(j);				
 				Alignement align = new Alignement(seq1, seq2);
 				align.aligner();
 				dis = 1 - align.scoreAlignement();
@@ -133,7 +126,7 @@ public class MatriceDistance {
 	 * restitue la liste des sequences
 	 * @return
 	 */
-	List<Sequence> getListeDesSequences() {
+	public List<Sequence> getListeDesSequences() {
 		return listeDesSequences;
 	}
 	
@@ -149,7 +142,7 @@ public class MatriceDistance {
 	 * restitue la liste contenant les indexs de la précédente matrice
 	 * @return
 	 */
-	List<Integer> getListAncienIndexMatDist() {
+	public List<Integer> getListAncienIndexMatDist() {
 		return listAncienIndexMatDist;
 	}
 }

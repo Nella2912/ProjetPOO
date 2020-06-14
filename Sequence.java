@@ -4,6 +4,7 @@
  * @author Hornella Fosso - Kahina Lounaci
  *
  */
+
 public class Sequence {
 	/**
 	 * Identifiant de la sequence

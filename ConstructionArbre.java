@@ -1,11 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * modelise un arbre avec la méthode UPGMA
  * @author Hornella Fosso-Kahina Lounaci
  *
  */
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class ConstructionArbre {
 	private MatriceDistance mD;               // une matrice de distances prise en paramètre
 	private List<Arbre> listeArbres;           // Liste des arbres
@@ -26,7 +27,7 @@ public class ConstructionArbre {
 		try {
 			listeArbres = new ArrayList<Arbre>();
 			for (Sequence seq : mD.getListeDesSequences()) {
-				Arbre a = new Arbre(seq.getID(), seq, null, null, null);
+				Arbre a = new Arbre(seq, null, null, null);
 				listeArbres.add(a);
 			}
 		}
@@ -44,7 +45,7 @@ public class ConstructionArbre {
 	 */
 	public Arbre fusionAbr(Arbre gA, Arbre dA, double distGD){
 		try {
-			Arbre pere = new Arbre("", null, null, gA, dA);
+			Arbre pere = new Arbre(null, null, gA, dA);
 			
 			if (gA.getDroite() == null && gA.getGauche() == null && dA.getDroite() == null && dA.getGauche() == null) {
 				pere.setHautD(distGD / 2);
@@ -67,10 +68,6 @@ public class ConstructionArbre {
 					}
 				}
 			}
-			
-			// on assigne le pere des deux arbres gauche et droit
-			gA.setPere(pere);
-			dA.setPere(pere);
 			
 			return pere;
 		}
@@ -240,7 +237,7 @@ public class ConstructionArbre {
 	 * restitue la matrice des distances
 	 * @return
 	 */
-	MatriceDistance getmD() {
+	public MatriceDistance getmD() {
 		return mD;
 	}
 	
@@ -248,7 +245,7 @@ public class ConstructionArbre {
 	 * restitue la liste des Arbres
 	 * @return
 	 */
-	List<Arbre> getListeArbres() {
+	public List<Arbre> getListeArbres() {
 		return listeArbres;
 	}
 }
