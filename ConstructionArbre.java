@@ -40,10 +40,10 @@ public class ConstructionArbre {
 	 * la fusion des arbres gauche et droit en paramètre en calculant 
 	 *  - les hauteurs des fils gauche et droit
 	 *  - le nombre de feuilles au niveau de chaque noeud
-	 * @param gA
-	 * @param dA
+	 * @param gA   fils gauche de l'arbre
+	 * @param dA   fils droit de l'arbre
 	 * @param distGD : distance entre fils gauche et fils droit
-	 * @return
+	 * @return  retourne l'arbre fusionné
 	 */
 	public Arbre fusionAbre(Arbre gA, Arbre dA, double distGD){
 		try {
@@ -114,8 +114,8 @@ public class ConstructionArbre {
 	
 	/**
 	 * fonction prenant un index et une matrice carré et qui supprime la ligne et la colonne correspondante à cet index
-	 * @param ancienMat
-	 * @param index
+	 * @param ancienMat  ancienne matrice carrée
+	 * @param index      index de la ligne et colonne à supprimer
 	 * @return
 	 */
 	public double[][] suppressionLigneColMatrice(double[][] ancienMat, int index) {
@@ -152,9 +152,9 @@ public class ConstructionArbre {
 	
 	/**
 	 * fonction permettant de calculer la nouvelle matrice des distances
-	 * @param ligmin
-	 * @param colmin
-	 * @param A
+	 * @param ligmin  ligne correspondant à la distance minimale dans la matrice
+	 * @param colmin  colonne correspondant à la distance minimale dans la matrice
+	 * @param A       Arbre qu'on vient de fusionné
 	 */
 	private void calcMatrice(int ligmin, int colmin, Arbre A){
 		try {

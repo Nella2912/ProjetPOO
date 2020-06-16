@@ -7,7 +7,7 @@
 public class Communes {
 	/**
 	 * fonction prennant une matrice carrée en entrée et l'affiche à la console
-	 * @param matrice
+	 * @param matrice  matrice carrée
 	 */
 	public static void afficheMatrice(double[][] matrice) {
 		int dim1 = matrice[0].length;

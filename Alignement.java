@@ -54,6 +54,11 @@ public class Alignement implements IAligneur{
 	private List<String> listAlignementSeq;
 	
 	/**
+	 * liste des Id et longueur des séquences alignées
+	 */
+	private List<String> listIdEtLongueurSeq;
+	
+	/**
 	 * construction d'un alignement en donnant deux sequences
 	 * @param seq1 première sequence
 	 * @param seq2 deuxième sequence
@@ -63,6 +68,7 @@ public class Alignement implements IAligneur{
 		this.s2 = seq2;
 		this.mat = new double [seq2.longueur() + 1][seq1.longueur() + 1];
 		this.listAlignementSeq = new ArrayList<String>();
+		this.listIdEtLongueurSeq = new ArrayList<String>();
 	}
 	
 	/**
@@ -75,6 +81,7 @@ public class Alignement implements IAligneur{
 		this.s1 = seq1;
 		this.mat = new double [seq1.longueur() + 1][a1.longueur() + 1];
 		this.listAlignementSeq = new ArrayList<String>();
+		this.listIdEtLongueurSeq = new ArrayList<String>();
 	}
 	
 	/**
@@ -87,13 +94,14 @@ public class Alignement implements IAligneur{
 		this.aln2 = a2;
 		this.mat = new double [a2.longueur() + 1][a1.longueur() + 1];
 		this.listAlignementSeq = new ArrayList<String>();
+		this.listIdEtLongueurSeq = new ArrayList<String>();
 	}
 	
 	
 	/**
 	 * remplit la matrice de scores pour un alignement : sequence <=> sequence
-	 * @param seq1
-	 * @param seq2
+	 * @param seq1 première séquence
+	 * @param seq2 deuxième séquence
 	 */
 	private void matriceDeScore(Sequence seq1, Sequence seq2) {
 		int lig, col;                                                                    // index de la matrice
@@ -136,8 +144,8 @@ public class Alignement implements IAligneur{
 	
 	/**
 	 * remplit la matrice de scores pour un alignement : alignement <=> sequence
-	 * @param a1
-	 * @param seq1
+	 * @param a1 Alignement à aligner
+	 * @param seq1  Séquence à aligner
 	 */
 	private void matriceDeScore(Alignement a1, Sequence seq1) {
 		int lig, col;                                                                    // index de la matrice
@@ -187,8 +195,8 @@ public class Alignement implements IAligneur{
 	
 	/**
 	 * remplit la matrice de scores pour un alignement : alignement <=> alignement
-	 * @param a1
-	 * @param a2
+	 * @param a1  premier alignement
+	 * @param a2  deuxième alignement
 	 */
 	private void matriceDeScore(Alignement a1, Alignement a2) {
 		int lig, col;                                                                    // index de la matrice
@@ -253,8 +261,8 @@ public class Alignement implements IAligneur{
 	
 	/**
 	 * effectue l'alignement de deux séquences à partir de la matrice des scores
-	 * @param seq1
-	 * @param seq2
+	 * @param seq1  première séquence
+	 * @param seq2  deuxième séquence
 	 */
 	private void aligner(Sequence seq1, Sequence seq2) {
 		// Calcul de la matrice des scores entre les deux séquences
@@ -314,12 +322,15 @@ public class Alignement implements IAligneur{
 		
 		this.listAlignementSeq.add(alignementSeq1);
 		this.listAlignementSeq.add(alignementSeq2);
+		
+		this.listIdEtLongueurSeq.add(seq1.getIdAffiche() + "##" + seq1.longueur());              // Enregistrement des Ids et longeur des séquences pour l'affichage
+		this.listIdEtLongueurSeq.add(seq2.getIdAffiche() + "##" + seq2.longueur());
 	}
 	
 	/**
 	 * effectue l'alignement d'un alignement et d'une séquence
-	 * @param a1
-	 * @param seq1
+	 * @param a1    Alignement à aligner
+	 * @param seq1  Séquence à aligner
 	 */
 	private void aligner(Alignement a1, Sequence seq1) {
 		// Calcul de la matrice des scores entre un alignement et une séquence
@@ -374,12 +385,17 @@ public class Alignement implements IAligneur{
 		
 		tmpListAln1.add(alignementSeq1);
 		this.setListAlignementSeq(tmpListAln1);
+		
+		// Mise à jour des Ids et longeur des séquences pour l'affichage
+		List<String> tmp = a1.getListIdEtLongueurSeq();
+		tmp.add(seq1.getIdAffiche() + "##" + seq1.longueur());
+		this.setListIdEtLongueurSeq(tmp);
 	}
 	
 	/**
 	 * effectue l'alignement de deux alignements
-	 * @param a1
-	 * @param a2
+	 * @param a1  premier alignement
+	 * @param a2  deuxième alignement
 	 */
 	private void aligner(Alignement a1, Alignement a2) {
 		// Calcul de la matrice des scores entre les deux alignements
@@ -439,6 +455,12 @@ public class Alignement implements IAligneur{
 		
 		tmpListAln1.addAll(tmpListAln2);
 		this.setListAlignementSeq(tmpListAln1);
+		
+		// Mise à jour des Ids et longeur des séquences pour l'affichage
+		List<String> tmp1 = a1.getListIdEtLongueurSeq();
+		List<String> tmp2 = a2.getListIdEtLongueurSeq();
+		tmp1.addAll(tmp2);
+		this.setListIdEtLongueurSeq(tmp1);
 	}
 	
 	/**
@@ -462,18 +484,19 @@ public class Alignement implements IAligneur{
 	 * affiche le résultat de l'alignement
 	 */
 	public void afficher() {
-		for(String str : this.listAlignementSeq) {
-			System.out.println(str);
+		for(int i = 0; i < this.listAlignementSeq.size(); i++) {
+			String[] tabIdLong = this.listIdEtLongueurSeq.get(i).split("##");
+			System.out.println(tabIdLong[0] + "  " + this.listAlignementSeq.get(i) + "  " + tabIdLong[1]);
 		}
 	}
 	
 	/**
 	 * fontion pour mettre à jour les alignements des séquences dans la liste des alignements de séquences pour un alignement donné.
-	 * @param al
-	 * @param count
-	 * @param index
-	 * @param tmpListAln
-	 * @return
+	 * @param al          alignement
+	 * @param count       nombre de séquences alignées
+	 * @param index       position à remplir (si négative alors on rempli un gap)
+	 * @param tmpListAln  liste des alignements
+	 * @return la liste des alignements modifiée
 	 */
 	private List<String> miseAJourListAlignementSeq(Alignement al, int count,  int index, List<String> tmpListAln) {
 		for (int l = 0; l < count; l++) {
@@ -565,6 +588,22 @@ public class Alignement implements IAligneur{
 	 */
 	public void setListAlignementSeq(List<String> listAlignementSeq) {
 		this.listAlignementSeq = listAlignementSeq;
+	}
+	
+	/**
+	 * retourne la listes des Ids et longueur des séquences alignées
+	 * @param listIdEtLongueurSeq
+	 */
+	public void setListIdEtLongueurSeq(List<String> listIdEtLongueurSeq) {
+		this.listIdEtLongueurSeq = listIdEtLongueurSeq;
+	}
+	
+	/**
+	 * retourne la listes des Ids et longueur des séquences alignées
+	 * @return
+	 */
+	public List<String> getListIdEtLongueurSeq() {
+		return listIdEtLongueurSeq;
 	}
 	
 	/**

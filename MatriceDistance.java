@@ -34,7 +34,7 @@ public class MatriceDistance {
 	
 	/**
 	 * instancie un objet Matrice Distance et initialise les attrinuts
-	 * @param filename
+	 * @param filename  fichier fasta à traiter
 	 */
 	public MatriceDistance(String filename) {
 		this.nomfichier = filename;

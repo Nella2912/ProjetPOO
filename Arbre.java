@@ -55,9 +55,10 @@ public class Arbre {
 	
 	/**
 	 * constructeur arbre avec deux arbres en paramètres
-	 * @param id
-	 * @param g
-	 * @param d
+	 * @param seq   séquence clé de l'arbre
+	 * @param al    alignement clé de l'arbre
+	 * @param g     fils gauche de l'arbre courant
+	 * @param d     fils droit de l'arbre courant
 	 */
 	public Arbre(Sequence seq, Alignement al, Arbre g, Arbre d){
 		this.seqCle = seq;
@@ -71,8 +72,7 @@ public class Arbre {
 	
 	/**
 	 * fonction faisant le parcours de l'arbre et les alignements à chaque noeud de l'arbre
-	 * @param abr
-	 * @return
+	 * @return l'arbre final (la racine) créé
 	 */
 	public Arbre parcourArbre() {
 		if (this.gauche == null && this.droite == null) {
@@ -81,7 +81,7 @@ public class Arbre {
 		
 		this.gauche = this.gauche.parcourArbre();
 		this.droite = this.droite.parcourArbre();
-		Alignement al = initAlignementAbr(this);
+		Alignement al = initAlignementAbre(this);
 		al.aligner();
 		this.alignCle = al;
 		
@@ -91,9 +91,9 @@ public class Arbre {
 	/**
 	 * fonction permettant d'initialiser un alignement lors du parcours de l'arbre
 	 * @param abr
-	 * @return
+	 * @return un objet Alignement
 	 */
-	private Alignement initAlignementAbr(Arbre abr) {
+	private Alignement initAlignementAbre(Arbre abr) {
 		if (abr.gauche.seqCle != null && abr.droite.seqCle != null) {
 			return new Alignement(abr.gauche.seqCle, abr.droite.seqCle);
 		} else {

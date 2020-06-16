@@ -14,7 +14,7 @@ public class AlignementMultiple {
 	public static void main(String[] args) throws Exception {
 		MatriceDistance mat = new MatriceDistance("ADN16S.fasta");
 		mat.initMatriceDistance();
-		
+		//Communes.afficheMatrice(mat.getDistMat());
 		ConstructionArbre ctrA = new ConstructionArbre(mat);
 		ctrA.upgma();
 		

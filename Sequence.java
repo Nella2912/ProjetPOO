@@ -7,6 +7,16 @@
 
 public class Sequence {
 	/**
+	 * longueur statique maximale de l'ID (utile pour un bon affichage)
+	 */
+	public final static int longeuerIdMax = 8;
+	
+	/**
+	 * Identifiant affiche sur "longueurIdMax" caractères
+	 */
+	private String IdAffiche;
+	
+	/**
 	 * Identifiant de la sequence
 	 */
 	private String id;
@@ -24,6 +34,7 @@ public class Sequence {
 	public Sequence(String identifiant, String chaine) {
 		this.id = identifiant;
 		this.seq = chaine;
+		initIdAffiche();
 	}
 	
 	/**
@@ -40,6 +51,14 @@ public class Sequence {
 	 */
 	public void setSEQ(String chaine) {
 		this.seq = chaine;
+	}
+	
+	/**
+	 * restitue l'identifiant de la sequence à affichr sur "longeuerIdMax"
+	 * @return identifiant de la sequence à afficher sur "longeuerIdMax"
+	 */
+	public String getIdAffiche() {
+		return this.IdAffiche;
 	}
 	
 	/**
@@ -80,5 +99,20 @@ public class Sequence {
 	 */
 	public void affiche() {
 		System.out.println(id + " " + seq);
+	}
+	
+	/**
+	 * Initialise l'ID de la séquence à affciher sur "longeuerIdMax"
+	 */
+	public void initIdAffiche() {
+		String result = "";
+		for (int i = 0; i < longeuerIdMax; i++) {
+			if (i >= id.length()) {
+				result = result + " ";
+			} else {
+				result = result + id.charAt(i);
+			}
+		}
+		this.IdAffiche = result;
 	}
 }
